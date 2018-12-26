@@ -39,7 +39,7 @@ struct
             val xtableraw = Seq.flatten (Seq.tabulate (fn n => generateOne n) (OrdTable.size keyTable))
             val xtable = OrdTable.collect xtableraw
             val redundent = OrdTable.map (fn t => Seq.map (fn (x,y) => (y, (x,y))) (Seq.flatten t)) xtable
-            val res = OrdTable.map (fn t => OrdTable.collect t) redundent
+            (* val res = OrdTable.map (fn t => OrdTable.collect t) redundent *)
 
             (* val pt = print("length:"^(Int.toString (Seq.length (Seq.flatten (OrdTable.range (Seq.nth (OrdTable.range res) 3)))))^"\n") *)
 
@@ -52,7 +52,7 @@ struct
 
             (* val pppt = print("\ntestkey:"^Key.toString (#1 (Seq.nth sorted 1))^","^Key.toString(#2 (Seq.nth sorted 2))^","^Key.toString(#2 (Seq.nth sorted 7))^", result:"^Int.toString(size (getRange (getOpt(OrdTable.find res (#1 (Seq.nth sorted 1)), (#2 (getOpt(next res (#1 (Seq.nth sorted 1)), ((#1 (Seq.nth sorted 1)), OrdTable.empty())))))) ((#2 (Seq.nth sorted 7)), (#2 (Seq.nth sorted 2)))))^"\n") *)
           in
-            res
+            OrdTable.map (fn t => OrdTable.collect t) redundent
           end
 
   (* Right of (leftbound) - Right of (rightbound) *)
