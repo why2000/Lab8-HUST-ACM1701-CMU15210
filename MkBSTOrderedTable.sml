@@ -18,25 +18,31 @@ struct
   exception NYI
 
   fun first (T : 'a table) : (key * 'a) option =
-    raise NYI   
+    case Tree.expose T
+      of NONE => NONE
+       | SOME {key=k, value=v, left=l, right=r} =>
+        if Tree.size l = 0 then SOME (k, v) else first l
 
   fun last (T : 'a table) : (key * 'a) option =
-    raise NYI
+    case Tree.expose T
+      of NONE => NONE
+       | SOME {key=k, value=v, left=l, right=r} =>
+        if Tree.size r = 0 then SOME (k, v) else last r
 		      
-  fun previous (T : 'a table) (k : key) : (key * 'a) option =
-    raise NYI
+  fun previous (T : 'a table) (k : key) : (key * 'a) option = last (#1 (Tree.splitAt (T, k)))
+  
+  fun next (T : 'a table) (k : key) : (key * 'a) option = first (#3 (Tree.splitAt (T, k)))
 
-  fun next (T : 'a table) (k : key) : (key * 'a) option =
-    raise NYI
+  fun join (L : 'a table, R : 'a table) : 'a table = Tree.join(L, R)
 
-  fun join (L : 'a table, R : 'a table) : 'a table =
-    raise NYI
+  fun split (T : 'a table, k : key) : 'a table * 'a option * 'a table = Tree.splitAt (T, k)
 
-  fun split (T : 'a table, k : key) : 'a table * 'a option * 'a table =
-    raise NYI
-
-  fun getRange (T : 'a table) (low : key, high : key) : 'a table =
-    raise NYI
+  fun getRange (T : 'a table) (low : key, high : key) : 'a table = 
+    case (Table.find T low, Table.find T high)
+      of (NONE, NONE) => #1 (split (#3 (split (T, low)), high))
+       | (SOME lv, NONE) => #1 (split (join (Tree.singleton(low, lv), #3 (split (T, low))), high))
+       | (NONE, SOME hv) => join (#1 (split (#3 (split (T, low)), high)), Tree.singleton (high, hv))
+       | (SOME lv, SOME hv) => join (#1 (split (join (Tree.singleton (low, lv), #3 (split (T, low))), high)), Tree.singleton(high, hv))
 						       
 
 end
