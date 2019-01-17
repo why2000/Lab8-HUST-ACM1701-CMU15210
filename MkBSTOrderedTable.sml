@@ -30,6 +30,18 @@ struct
         if Tree.size r = 0 then SOME (k, v) else last r
 		      
   fun previous (T : 'a table) (k : key) : (key * 'a) option = last (#1 (Tree.splitAt (T, k)))
+    (* disabled because the type NODE is not loaded *)
+    (* let
+      fun chk (EMPTY, _, _) = NONE
+        | chk (NODE {data=d, left=l, right=r, ...}, SOME p, stats) =
+          case Key.compare (k, #key d)
+            of EQUAL => if l = EMPTY then NONE else SOME (#key (#data l), #value (#data l))
+             | LESS => if stats = GREATER then SOME p else chk (l, SOME (#key d, #value d), LESS)
+             | GREATER => if stats = LESS then SOME (#key d, #value d) else chk (r, SOME (#key d, #value d), GREATER)
+    in 
+      chk (T, NONE, EQUAL)
+    end *)
+
   
   fun next (T : 'a table) (k : key) : (key * 'a) option = first (#3 (Tree.splitAt (T, k)))
 
